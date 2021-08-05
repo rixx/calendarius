@@ -3,6 +3,7 @@ import bs4
 html = bs4.BeautifulSoup(open("data.html"), "html.parser")
 rows = html.find_all("tr")
 
+
 def process_location(location, start, end):
     if "?" in start or "?" in end:
         return
@@ -11,7 +12,9 @@ def process_location(location, start, end):
     location = location.split("\n")[0]
     start = [s.lstrip("0") for s in start.split(".")]
     end = [e.lstrip("0") for e in end.split(".")]
-    print(f'"{location}": (({start[0]}, {start[1]}, {start[2]}), ({end[0]}, {end[1]}, {end[2]}))')
+    print(
+        f'"{location}": (({start[0]}, {start[1]}, {start[2]}), ({end[0]}, {end[1]}, {end[2]}))'
+    )
 
 
 for row in rows:
