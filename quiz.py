@@ -7,23 +7,25 @@ from data import LOCATIONS, DATE_LOOKUP
 
 class Date:
     def __init__(self, year, month, day, location=None, is_gregorian=True):
-        self.year = year
+        self.year = year  # Year 0 is 1 BCE
         self.month = month
         self.day = day
         self.location = location
         self.is_gregorian = is_gregorian
 
     def __str__(self):
-        result = self._date.strftime("%d. %B ") + str(abs(self.year))
-        if self.year < 0:
-            result += " BCE"
+        result = self._date.strftime("%d. %B ")
+        if self.year < 1:
+            result += f"{abs(year) + 1} BCE"
+        else:
+            result += str(abs(self.year))
         if self.location:
             result += f" in {self.location}"
         return result
 
     @cached_property
     def _date(self):
-        return dt.date(self.year, self.month, self.day)
+        return dt.date(self.year if self.year > 0 else abs(self.year) + 1, self.month, self.day)
 
     @cached_property
     def is_leap_year(self):
@@ -84,7 +86,7 @@ def get_random_date():
     Some of this is imprecise, because I can't be arsed to make
     sure countries are only included when they actually existed.
     """
-    year = random.randrange(-45, dt.date.today().year + 200)
+    year = random.randrange(-44, dt.date.today().year + 200)
     month = random.randrange(1, 13)
     day = None
     location = None
@@ -143,7 +145,6 @@ def get_random_day(month, year, is_gregorian):
 def main():
     date = get_random_date()
     print(date)
-    print(date.weekday_string)
 
 
 if __name__ == "__main__":
