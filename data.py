@@ -93,6 +93,12 @@ LOCATIONS = {  # Location: last Julian date, first Gregorian date
 }
 
 
+# The date lookup is entirely taken from Wikipedia
+# https://en.wikipedia.org/wiki/Determination_of_the_day_of_the_week#Complete_table:_Julian_and_Gregorian_calendars
+# Tested to work correctly with:
+# - current date
+# - Thursday, 4 October 1582 (is_gregorian=False)
+# - Friday, 15 October 1582 (is_gregorian=True)
 DATE_LOOKUP = {
     "centuries_gregorian": {0: 0, 1: 5, 2: 3, 3: 1},
     "centuries_julian": {0: 5, 1: 4, 2: 3, 3: 2, 4: 1, 5: 0, 6: 6},
