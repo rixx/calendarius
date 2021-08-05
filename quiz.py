@@ -1,5 +1,6 @@
 import datetime as dt
 import random
+from functools import cached_property
 
 
 """
@@ -89,12 +90,40 @@ LOCATIONS = {  # Location: last Julian date, first Gregorian date
     "Scotland": ((1752, 9, 2), (1752, 9, 14)),
     "Slovakia": ((1584, 1, 22), (1584, 2, 2)),  # as part of Hungary tbh
     "Spain": ((1582, 10, 4), (1582, 10, 15)),
-    "Lucerne (Luzern), Switzerland:": ((1584, 1, 11), (1584, 1, 22)),
-    "Uri, Switzerland:": ((1584, 1, 11), (1584, 1, 22)),
-    "Zürich, Switzerland:": ((1700, 12, 31), (1701, 1, 12)),
-    "Bern, Switzerland:": ((1700, 12, 31), (1701, 1, 12)),
-    "Geneva, Switzerland:": ((1700, 12, 31), (1701, 1, 12)),
+    "Lucerne (Luzern), Switzerland": ((1584, 1, 11), (1584, 1, 22)),
+    "Uri, Switzerland": ((1584, 1, 11), (1584, 1, 22)),
+    "Zürich, Switzerland": ((1700, 12, 31), (1701, 1, 12)),
+    "Bern, Switzerland": ((1700, 12, 31), (1701, 1, 12)),
+    "Geneva, Switzerland": ((1700, 12, 31), (1701, 1, 12)),
 }
+
+
+class Date:
+    def __init__(self, year, month, day, location=None, is_gregorian=True):
+        self.year = year
+        self.month = month
+        self.day = day
+        self.location = location
+        self.is_gregorian = is_gregorian
+
+    def __str__(self):
+        result = self._date.strftime("%d. %B ") + str(abs(self.year))
+        if self.year < 0:
+            result += " BCE"
+        if self.location:
+            result += f" in {self.location}"
+        return result
+
+    @cached_property
+    def _date(self):
+        return dt.date(self.year, self.month, self.day)
+
+    @cached_property
+    def weekday(self):
+        """Monday is 0, Sunday is 6"""
+        if self.is_gregorian:
+            return self._date.weekday()
+        raise NotImplementedError
 
 
 def get_random_date():
@@ -153,13 +182,9 @@ def get_random_date():
     if not day:
         day = get_random_day(year, month, is_gregorian=is_gregorian)
 
-    return {
-        "year": year,
-        "month": month,
-        "day": day,
-        "location": location,
-        "is_gregorian": is_gregorian,
-    }
+    return Date(
+        year=year, month=month, day=day, location=location, is_gregorian=is_gregorian
+    )
 
 
 def get_random_day(month, year, is_gregorian):
